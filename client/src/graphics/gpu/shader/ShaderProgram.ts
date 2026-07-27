@@ -1,5 +1,5 @@
-import { Logger } from "../core/Logger";
-import type { GPUResource } from "./GPUResource";
+import { Logger } from "../../../core/Logger";
+import type { GPUResource } from "../GPUResource";
 import type { GraphicsDevice } from "./GraphicsDevice";
 import type { Shader } from "./Shader";
 
@@ -116,5 +116,19 @@ export class ShaderProgram implements GPUResource {
         );
 
         return location;
+    }
+
+    public setFloat(name: string, value: number) {
+        const gl = this.graphics.getContext();
+        const uniform = this.getUniformLocation(name);
+
+        gl.uniform1f(uniform, value);
+    }
+
+    public setVector2(name: string, x: number, y: number) {
+        const gl = this.graphics.getContext();
+        const uniform = this.getUniformLocation(name);
+
+        gl.uniform2f(uniform, x, y);
     }
 }

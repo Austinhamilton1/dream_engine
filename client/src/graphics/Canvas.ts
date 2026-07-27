@@ -1,7 +1,6 @@
 import type { EngineConfig } from "../core/Config";
 import type { EventBus } from "../core/EventBus";
 import { EngineEvent } from "../core/EngineEvents";
-import type { WindowResizeEvent } from "../core/EngineEvents"
 import { Logger } from "../core/Logger";
 
 export class Canvas {

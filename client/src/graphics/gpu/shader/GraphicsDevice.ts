@@ -1,8 +1,8 @@
-import type { ClearColor } from "../core/Config";
-import { EngineEvent } from "../core/EngineEvents";
-import type { EventBus } from "../core/EventBus";
-import { Logger } from "../core/Logger";
-import type { Canvas } from "./Canvas";
+import type { ClearColor } from "../../../core/Config";
+import { EngineEvent } from "../../../core/EngineEvents";
+import type { EventBus } from "../../../core/EventBus";
+import { Logger } from "../../../core/Logger";
+import type { Canvas } from "../../Canvas";
 
 interface Viewport {
     x: number;

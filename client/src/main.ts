@@ -16,4 +16,6 @@ const engine = new Engine(app, {
     }
 });
 
+await engine.initialize();
+
 engine.run();

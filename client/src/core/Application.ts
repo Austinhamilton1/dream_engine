@@ -6,7 +6,7 @@ export abstract class Application {
     /*
      * Called once after the engine has initialized.
      */
-    public initialize(engine: Engine): void {
+    public async initialize(engine: Engine): Promise<void> {
         this.engine = engine;
     }
 

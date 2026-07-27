@@ -1,5 +1,6 @@
+import { ShaderLoader } from "../assets/ShaderLoader";
 import { Canvas } from "../graphics/Canvas";
-import { GraphicsDevice } from "../graphics/GraphicsDevice";
+import { GraphicsDevice } from "../graphics/gpu/shader/GraphicsDevice";
 import { Renderer } from "../graphics/Renderer";
 import { DebugOverlay } from "../ui/DebugOverlay";
 import type { Application } from "./Application";
@@ -19,6 +20,7 @@ export class Engine {
     private readonly application: Application;
     private readonly graphics: GraphicsDevice;
     private readonly renderer: Renderer;
+    private readonly shaderLoader: ShaderLoader;
 
     constructor(application: Application, config: EngineConfig) {
         this.application = application;
@@ -37,12 +39,16 @@ export class Engine {
         );
 
         this.renderer = new Renderer(this.graphics);
+
+        this.shaderLoader = new ShaderLoader();
         
         Timer.initialize();
 
         this.fpsCounter = new DebugOverlay();
+    }
 
-        this.application.initialize(this);
+    public async initialize(): Promise<void> {
+        await this.application.initialize(this);
     }
 
     public getCanvas(): Canvas {
@@ -55,6 +61,10 @@ export class Engine {
 
     public getRenderer(): Renderer {
         return this.renderer;
+    }
+
+    public getShaderLoader(): ShaderLoader {
+        return this.shaderLoader;
     }
 
     public run(): void {
