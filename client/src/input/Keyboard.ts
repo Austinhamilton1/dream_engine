@@ -27,11 +27,11 @@ export class Keyboard {
         return Keyboard.instance;
     }
 
-    public static isKeyDown(key: string): boolean {
+    public isKeyDown(key: string): boolean {
         return Keyboard.downKeys.has(key);
     }
 
-    public static isKeyUp(key: string): boolean {
+    public isKeyUp(key: string): boolean {
         return !Keyboard.downKeys.has(key);
     }
 }

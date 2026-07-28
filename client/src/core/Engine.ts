@@ -1,7 +1,7 @@
-import { ShaderLoader } from "../assets/ShaderLoader";
+import { AssetManager } from "../assets/AssetManager";
 import { Canvas } from "../graphics/Canvas";
 import { GraphicsDevice } from "../graphics/gpu/shader/GraphicsDevice";
-import { Renderer } from "../graphics/Renderer";
+import { Renderer } from "../graphics/renderer/Renderer";
 import { DebugOverlay } from "../ui/DebugOverlay";
 import type { Application } from "./Application";
 import type { EngineConfig } from "./Config";
@@ -20,7 +20,7 @@ export class Engine {
     private readonly application: Application;
     private readonly graphics: GraphicsDevice;
     private readonly renderer: Renderer;
-    private readonly shaderLoader: ShaderLoader;
+    private readonly manager: AssetManager;
 
     constructor(application: Application, config: EngineConfig) {
         this.application = application;
@@ -38,9 +38,9 @@ export class Engine {
             this.eventBus,
         );
 
-        this.renderer = new Renderer(this.graphics);
+        this.renderer = new Renderer();
 
-        this.shaderLoader = new ShaderLoader();
+        this.manager = new AssetManager();
         
         Timer.initialize();
 
@@ -63,8 +63,8 @@ export class Engine {
         return this.renderer;
     }
 
-    public getShaderLoader(): ShaderLoader {
-        return this.shaderLoader;
+    public getAssetManager(): AssetManager {
+        return this.manager;
     }
 
     public run(): void {
@@ -76,6 +76,7 @@ export class Engine {
     public stop(): void {
         this.running = false;
         this.application.shutdown();
+        this.manager.destroy();
         Logger.info('Dream Engine Stopped');
     }
 

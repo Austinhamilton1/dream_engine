@@ -1,53 +1,28 @@
 import { Application } from "./core/Application";
 import type { Engine } from "./core/Engine";
-import { Timer } from "./core/Timer";
-import { Shader } from "./graphics/gpu/shader/Shader";
-import { ShaderProgram } from "./graphics/gpu/shader/ShaderProgram";
-import { ShaderType } from "./graphics/gpu/shader/ShaderType";
-import { FloatUniform } from "./graphics/gpu/uniform/FloatUniform";
-import type { Uniform } from "./graphics/gpu/uniform/Uniform";
-import { Vec2Uniform } from "./graphics/gpu/uniform/VectorUniform";
+import { ClearPass } from "./graphics/renderer/passes/ClearPass";
+import { DreamPass } from "./graphics/renderer/passes/DreamPass";
 
 export class DreamApplication extends Application {
-    private program!: ShaderProgram;
-    private uniforms = new Map<string, Uniform<any>>();
-
     public override async initialize(engine: Engine): Promise<void> {
         await super.initialize(engine);
 
-        const graphics = engine.getGraphics();
-        const loader = engine.getShaderLoader();
+        const renderer = this.engine.getRenderer();
 
-        const vertexSource = await loader.load(
-            '/src/shaders/fullscreen.vert'
+        renderer.addPass(
+            new ClearPass()
         );
 
-        const fragmentSource = await loader.load(
-            '/src/shaders/dream_field.frag'
+        renderer.addPass(
+            new DreamPass()
         );
 
-        const vertex = new Shader(
-            graphics,
-            ShaderType.Vertex,
-            vertexSource,
-        );
-
-        const fragment = new Shader(
-            graphics,
-            ShaderType.Fragment,
-            fragmentSource,
-        );
-
-        this.program = new ShaderProgram(
-            graphics,
-            vertex,
-            fragment,
-        );
-
-        this.uniforms.set('uTime', new FloatUniform('uTime', 0));
-
-        const viewport = graphics.getViewport();
-        this.uniforms.set('uResolution', new Vec2Uniform('uResolution', [viewport.width, viewport.height]));
+        await renderer.initialize({
+            graphics: this.engine.getGraphics(),
+            manager: this.engine.getAssetManager(),
+            width: this.engine.getCanvas().element.width,
+            height: this.engine.getCanvas().element.height,
+        });
     }
 
     public override update(deltaTime: number): void {
@@ -57,36 +32,17 @@ export class DreamApplication extends Application {
     public override render(): void {
         this.engine
             .getRenderer()
-            .clear(
-                this.engine.config.clearColor
-            );  
-            
-        this.engine
-            .getRenderer()
-            .drawFullscreen(
-                this.program,
-                () => {
-                    const uTime = this.uniforms.get('uTime');
-                    if(uTime) {
-                        uTime.set(Timer.elapsedTime);
-                        uTime.upload(this.program);
-                    }
-
-                    const viewport = 
-                        this.engine
-                            .getGraphics()
-                            .getViewport();
-
-                    const uResolution = this.uniforms.get('uResolution');
-                    if(uResolution) {
-                        uResolution.set([viewport.width, viewport.height]);
-                        uResolution.upload(this.program);
-                    }
-                }
-            );
+            .render({
+                graphics: this.engine.getGraphics(),
+                manager: this.engine.getAssetManager(),
+                width: this.engine.getCanvas().element.width,
+                height: this.engine.getCanvas().element.height,
+            })
     }
 
     public override shutdown(): void {
-        
+        this.engine
+            .getRenderer()
+            .dispose();
     }
 }

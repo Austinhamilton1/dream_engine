@@ -49,6 +49,15 @@ export class GraphicsDevice {
         );
     }
 
+    public drawFullScreen(): void {
+        this.gl
+            .drawArrays(
+                this.gl.TRIANGLES,
+                0,
+                3,
+            );
+    }
+
     public resize(
         width: number,
         height: number,
