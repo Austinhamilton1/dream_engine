@@ -1,7 +1,16 @@
+import { EngineEvent } from "../core/EngineEvents";
+import type { EventBus } from "../core/EventBus";
+
 export class DebugOverlay {
     private element: HTMLDivElement;
+    private info: HTMLDivElement;
+    private runButton: HTMLButtonElement;
+    private running: boolean = true;
+    private stepButton: HTMLButtonElement;
 
-    constructor() {
+    constructor(
+        private readonly eventBus: EventBus
+    ) {
         this.element = document.createElement('div');
 
         this.element.style.position = 'fixed';
@@ -19,9 +28,69 @@ export class DebugOverlay {
         this.element.style.borderRadius = '4px';
         this.element.style.pointerEvents = 'none';
 
-        this.element.innerText = 'FPS: --';
+        this.info = document.createElement('div');
+        this.info.innerText = 'FPS: --';
+
+        this.runButton = document.createElement('button');
+
+        this.runButton.textContent = 'Stop';
+        this.runButton.style.pointerEvents = 'auto';
+
+        this.runButton.addEventListener('click', () => {
+            if(this.running) {
+                this.stop();
+            } else {
+                this.start()
+            }
+        });
+
+        this.stepButton = document.createElement('button');
+
+        this.stepButton.textContent = 'Step';
+        this.stepButton.style.pointerEvents = 'auto';
+
+        this.stepButton.addEventListener('click', () => {
+            this.step();
+        });
 
         document.body.appendChild(this.element);
+        this.element.appendChild(this.info);
+        this.element.appendChild(this.runButton);
+        this.element.appendChild(this.stepButton);
+    }
+
+    private stop() {
+        console.log('stop pressed');
+        this.eventBus.emit(
+            EngineEvent.EngineStop,
+            {
+                source: 'DebugOverlay.ts',
+            }
+        );
+
+        this.running = !this.running;
+        this.runButton.textContent = 'Start';
+    }
+
+    private start() {
+        this.eventBus.emit(
+            EngineEvent.EngineStart,
+            {
+                source: 'DebugOverlay.ts',
+            }
+        );
+
+        this.running = !this.running;
+        this.runButton.textContent = 'Stop';
+    }
+
+    private step() {
+        this.eventBus.emit(
+            EngineEvent.EngineStep,
+            {
+                source: 'DebugOverlay.ts',
+            }
+        );
     }
 
     public update(
@@ -31,7 +100,7 @@ export class DebugOverlay {
         width: number,
         height: number,
     ): void {
-        this.element.innerHTML = 
+        this.info.innerHTML = 
 `
 Dream Engine
 

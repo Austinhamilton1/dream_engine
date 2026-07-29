@@ -1,13 +1,17 @@
-import type { GPUResource } from "../../gpu/GPUResource";
+import type { GPUResource } from "../GPUResource";
 import { Framebuffer } from "./FrameBuffer";
 
 export class PingPongFramebuffer implements GPUResource {
     private front: Framebuffer;
     private back: Framebuffer;
 
-    constructor(gl: WebGL2RenderingContext) {
-        this.front = new Framebuffer(gl);
-        this.back = new Framebuffer(gl);
+    constructor(
+        gl: WebGL2RenderingContext,
+        width: number,
+        height: number,
+    ) {
+        this.front = new Framebuffer(gl, width, height);
+        this.back = new Framebuffer(gl, width, height);
     }
 
     public getRead(): Framebuffer {

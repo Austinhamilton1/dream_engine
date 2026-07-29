@@ -1,6 +1,6 @@
 import { Logger } from "../../../core/Logger";
 import type { GPUResource } from "../GPUResource";
-import type { GraphicsDevice } from "./GraphicsDevice";
+import type { GraphicsDevice } from "../GraphicsDevice";
 import type { Shader } from "./Shader";
 
 export class ShaderProgram implements GPUResource {
@@ -125,10 +125,24 @@ export class ShaderProgram implements GPUResource {
         gl.uniform1f(uniform, value);
     }
 
+    public setInt(name: string, value: number) {
+        const gl = this.graphics.getContext();
+        const uniform = this.getUniformLocation(name);
+
+        gl.uniform1i(uniform, value);
+    }
+
     public setVector2(name: string, x: number, y: number) {
         const gl = this.graphics.getContext();
         const uniform = this.getUniformLocation(name);
 
         gl.uniform2f(uniform, x, y);
+    }
+
+    public setVector3(name: string, x: number, y: number, z: number) {
+        const gl = this.graphics.getContext();
+        const uniform = this.getUniformLocation(name);
+
+        gl.uniform3f(uniform, x, y, z);
     }
 }

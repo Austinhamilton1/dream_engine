@@ -44,5 +44,5 @@ void main() {
 
     col += grain * 0.03;
 
-    color = vec4(col,1.0);
+    color = vec4(col, 1.0);
 }

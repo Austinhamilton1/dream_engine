@@ -1,51 +1,50 @@
-import { FramebufferLoader } from "../../../assets/loaders/FramebufferLoader";
 import { MaterialLoader } from "../../../assets/loaders/MaterialLoader";
 import { ShaderLoader } from "../../../assets/loaders/ShaderLoader";
-import { Timer } from "../../../core/Timer";
 import { Framebuffer } from "../../gpu/framebuffer/FrameBuffer";
 import { ShaderProgram } from "../../gpu/shader/ShaderProgram";
-import { FloatUniform, Vec2Uniform } from "../../gpu/uniform/Uniform";
+import { IntUniform, Vec2Uniform } from "../../gpu/uniform/Uniform";
 import { Material } from "../../material/Material";
 import type { RenderContext } from "../RenderContext";
 import { RenderPass } from "./RenderPass";
 
-export class DreamPass extends RenderPass {
+export class MandelbrotPass extends RenderPass {
     public override async initialize(
         ctx: RenderContext
     ): Promise<void> {
         const manager = ctx.manager;
-        const viewport = ctx.graphics.getViewport();
 
         const program = await manager.load<ShaderProgram>(
-            'dream',
+            'mandelbrot',
             new ShaderLoader(
                 ctx.graphics,
                 '/src/common/shaders/fullscreen.vert',
-                '/src/common/shaders/dream_field.frag',
+                '/src/common/shaders/mandelbrot.frag',
             ),
         );
 
-        await manager.load<Framebuffer>(
-            'dream_buffer',
-            new FramebufferLoader(
-                ctx.graphics,
-                viewport.width,
-                viewport.height,
-            ),
-        );
-        
-        await manager.load<Material>(
-            'dream_material',
+        const material = await manager.load<Material>(
+            'mandelbrot_material',
             new MaterialLoader(
                 program,
-            )
-        )
-
-        this.uniforms.set(
-            'uTime',
-            new FloatUniform('uTime', 0),
+            ),
         );
 
+        material.addUniform(
+            new IntUniform(
+                'uDream', 
+                0,
+            ),
+        );
+
+        const buffer = manager.get<Framebuffer>('dream_buffer');
+        if(buffer) {
+            material.setTexture(
+                'uDream',
+                buffer.getTexture(),
+            );
+        }
+        
+        const viewport = ctx.graphics.getViewport();
         this.uniforms.set(
             'uResolution',
             new Vec2Uniform(
@@ -56,21 +55,10 @@ export class DreamPass extends RenderPass {
     }
 
     public override render(ctx: RenderContext): void {
-        const target = ctx.manager.get<Framebuffer>('dream_buffer');
-        if(!target) return;
-
-        const material = ctx.manager.get<Material>('dream_material');
+        const material = ctx.manager.get<Material>('mandelbrot_material');
         if(!material) return;
 
-        target.bind();
         material.apply();
-
-        const uTime = this.uniforms.get('uTime');
-        if(uTime) {
-            uTime.set(Timer.elapsedTime);
-            uTime.upload(material.getShader());
-        }
-
         const viewport = ctx.graphics.getViewport();
         const uResolution = this.uniforms.get('uResolution');
         if(uResolution) {
@@ -79,7 +67,6 @@ export class DreamPass extends RenderPass {
         }
 
         ctx.graphics.drawFullScreen();
-        target.unbind();
     }
 
     public override dispose(): void {}

@@ -1,5 +1,5 @@
 import { Logger } from "../../core/Logger";
-import type { GraphicsDevice } from "../../graphics/gpu/shader/GraphicsDevice";
+import type { GraphicsDevice } from "../../graphics/gpu/GraphicsDevice";
 import { Shader } from "../../graphics/gpu/shader/Shader";
 import { ShaderProgram } from "../../graphics/gpu/shader/ShaderProgram";
 import { ShaderType } from "../../graphics/gpu/shader/ShaderType";

@@ -2,6 +2,7 @@ import { Application } from "./core/Application";
 import type { Engine } from "./core/Engine";
 import { ClearPass } from "./graphics/renderer/passes/ClearPass";
 import { DreamPass } from "./graphics/renderer/passes/DreamPass";
+import { MandelbrotPass } from './graphics/renderer/passes/Mandelbrot';
 
 export class DreamApplication extends Application {
     public override async initialize(engine: Engine): Promise<void> {
@@ -15,6 +16,10 @@ export class DreamApplication extends Application {
 
         renderer.addPass(
             new DreamPass()
+        );
+
+        renderer.addPass(
+            new MandelbrotPass()
         );
 
         await renderer.initialize({

@@ -1,10 +1,11 @@
 import { AssetManager } from "../assets/AssetManager";
 import { Canvas } from "../graphics/Canvas";
-import { GraphicsDevice } from "../graphics/gpu/shader/GraphicsDevice";
+import { GraphicsDevice } from "../graphics/gpu/GraphicsDevice";
 import { Renderer } from "../graphics/renderer/Renderer";
 import { DebugOverlay } from "../ui/DebugOverlay";
 import type { Application } from "./Application";
 import type { EngineConfig } from "./Config";
+import { EngineEvent } from "./EngineEvents";
 import { EventBus } from "./EventBus";
 import { Logger } from "./Logger";
 import { Timer } from "./Timer";
@@ -44,7 +45,32 @@ export class Engine {
         
         Timer.initialize();
 
-        this.fpsCounter = new DebugOverlay();
+        this.fpsCounter = new DebugOverlay(this.eventBus);
+
+        this.eventBus.on(
+            EngineEvent.EngineStart,
+            async ({ source }) => {
+                Logger.info('Starting engine from "%s"', source);
+                await this.initialize();
+                this.run();
+            }
+        );
+
+        this.eventBus.on(
+            EngineEvent.EngineStop,
+            ({ source }) => {
+                Logger.info('Stopping engine from "%s"', source);
+                this.stop();
+            }
+        );
+
+        this.eventBus.on(
+            EngineEvent.EngineStep,
+            async ({ source }) => {
+                Logger.info('Stepping engine from "%s"', source);
+                await this.step();
+            }
+        )
     }
 
     public async initialize(): Promise<void> {
@@ -68,7 +94,11 @@ export class Engine {
     }
 
     public run(): void {
+        if(this.running) return;
+
         Logger.info('Starting Dream Engine');
+        Timer.update();
+        Timer.resetFrameTime();
         this.running = true;
         requestAnimationFrame(this.loop);
     }
@@ -99,5 +129,32 @@ export class Engine {
         this.application.render();
 
         requestAnimationFrame(this.loop);
+    }
+
+    private step = async () => {
+        if(this.running) return;
+
+        await this.initialize();
+
+        Timer.update();
+        Timer.resetFrameTime();
+        Timer.deltaTime = 0.01667;
+        Timer.elapsedTime += 0.01667;
+
+        const viewport = this.graphics.getViewport();
+
+        this.fpsCounter.update(
+            60,
+            Timer.frame,
+            0.01667,
+            viewport.width,
+            viewport.height,
+        );
+
+        // At each step update at 60 fps 
+        this.application.update(0.01667);
+        this.application.render();
+
+        this.stop();
     }
 }

@@ -2,7 +2,7 @@ import { Logger } from "../../core/Logger";
 import { VertexLayout } from "../../graphics/gpu/layout/VertexLayout";
 import { Mesh } from "../../graphics/gpu/mesh/Mesh";
 import { PrimitiveType, type MeshData } from "../../graphics/gpu/mesh/MeshData";
-import type { GraphicsDevice } from "../../graphics/gpu/shader/GraphicsDevice";
+import type { GraphicsDevice } from "../../graphics/gpu/GraphicsDevice";
 import { AssetLoader } from "../AssetLoader";
 
 export class MeshLoader extends AssetLoader<Mesh> {

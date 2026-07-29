@@ -1,5 +1,5 @@
 import type { AssetManager } from "../../assets/AssetManager";
-import type { GraphicsDevice } from "../gpu/shader/GraphicsDevice";
+import type { GraphicsDevice } from "../gpu/GraphicsDevice";
 
 export interface RenderContext {
     graphics: GraphicsDevice;

@@ -36,4 +36,7 @@ export class Timer {
         }
     }
 
+    public static resetFrameTime(): void {
+        this.elapsedTime -= this.deltaTime;
+    }
 }
