@@ -4,9 +4,9 @@ export enum BlendMode {
 }
 
 export enum CullMode {
-    None,
     Back,
     Front,
+    FrontAndBack,
 }
 
 export class RenderState {

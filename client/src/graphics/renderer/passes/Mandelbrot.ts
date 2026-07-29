@@ -2,7 +2,7 @@ import { MaterialLoader } from "../../../assets/loaders/MaterialLoader";
 import { ShaderLoader } from "../../../assets/loaders/ShaderLoader";
 import { Framebuffer } from "../../gpu/framebuffer/FrameBuffer";
 import { ShaderProgram } from "../../gpu/shader/ShaderProgram";
-import { IntUniform, Vec2Uniform } from "../../gpu/uniform/Uniform";
+import { Vec2Uniform } from "../../gpu/uniform/Uniform";
 import { Material } from "../../material/Material";
 import type { RenderContext } from "../RenderContext";
 import { RenderPass } from "./RenderPass";
@@ -25,14 +25,7 @@ export class MandelbrotPass extends RenderPass {
         const material = await manager.load<Material>(
             'mandelbrot_material',
             new MaterialLoader(
-                program,
-            ),
-        );
-
-        material.addUniform(
-            new IntUniform(
-                'uDream', 
-                0,
+                '/src/common/materials/mandelbrot.json'
             ),
         );
 
@@ -52,6 +45,8 @@ export class MandelbrotPass extends RenderPass {
                 [viewport.width, viewport.height],
             ),
         );
+
+        material.setShader(program);
     }
 
     public override render(ctx: RenderContext): void {

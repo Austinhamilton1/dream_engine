@@ -1,0 +1,9 @@
+{
+    "uniforms": [
+        {
+            "name": "uDream",
+            "type": "int",
+            "value": 0
+        }
+    ]
+}

@@ -34,11 +34,9 @@ export class DreamPass extends RenderPass {
             ),
         );
         
-        await manager.load<Material>(
+        const material = await manager.load<Material>(
             'dream_material',
-            new MaterialLoader(
-                program,
-            )
+            new MaterialLoader(null),
         )
 
         this.uniforms.set(
@@ -53,6 +51,8 @@ export class DreamPass extends RenderPass {
                 [viewport.width, viewport.height],
             ),
         );
+
+        material.setShader(program);
     }
 
     public override render(ctx: RenderContext): void {
