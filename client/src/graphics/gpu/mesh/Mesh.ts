@@ -76,11 +76,11 @@ export class Mesh implements Disposable {
     }
 
     public dispose(): void {
-        this.vao.destroy();
-        this.vertexBuffer.destroy();
+        this.vao.dispose();
+        this.vertexBuffer.dispose();
 
         if(this.indexBuffer) {
-            this.indexBuffer.destroy();
+            this.indexBuffer.dispose();
         }
     }
 }

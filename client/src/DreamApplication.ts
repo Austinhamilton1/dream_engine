@@ -1,18 +1,15 @@
 import { Application } from "./core/Application";
 import type { Engine } from "./core/Engine";
-import { ClearPass } from "./passes/ClearPass";
+import { PresentPass } from "./graphics/renderer/PresentPass";
 import { DreamPass } from "./passes/DreamPass";
 import { MandelbrotPass } from './passes/MandelbrotPass';
+import { PaintPass } from "./passes/PaintPass";
 
 export class DreamApplication extends Application {
     public override async initialize(engine: Engine): Promise<void> {
         await super.initialize(engine);
 
         const renderer = this.engine.getRenderer();
-
-        renderer.addPass(
-            new ClearPass()
-        );
 
         renderer.addPass(
             new DreamPass()
@@ -22,12 +19,15 @@ export class DreamApplication extends Application {
             new MandelbrotPass()
         );
 
-        await renderer.initialize({
-            graphics: this.engine.getGraphics(),
-            manager: this.engine.getAssetManager(),
-            width: this.engine.getCanvas().element.width,
-            height: this.engine.getCanvas().element.height,
-        });
+        renderer.addPass(
+            new PaintPass()
+        );
+
+        renderer.addPass(
+            new PresentPass()
+        )
+
+        await renderer.initialize(this.engine);
     }
 
     public override update(deltaTime: number): void {
@@ -37,12 +37,7 @@ export class DreamApplication extends Application {
     public override render(): void {
         this.engine
             .getRenderer()
-            .render({
-                graphics: this.engine.getGraphics(),
-                manager: this.engine.getAssetManager(),
-                width: this.engine.getCanvas().element.width,
-                height: this.engine.getCanvas().element.height,
-            })
+            .render()
     }
 
     public override shutdown(): void {

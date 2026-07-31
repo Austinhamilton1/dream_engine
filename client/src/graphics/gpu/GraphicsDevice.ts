@@ -1,8 +1,9 @@
 import type { ClearColor } from "../../core/Config";
-import { EngineEvent } from "../../core/EngineEvents";
-import type { EventBus } from "../../core/EventBus";
 import { Logger } from "../../core/Logger";
 import type { Canvas } from "../Canvas";
+import type { Disposable } from "../Disposable";
+import { Mesh } from "./mesh/Mesh";
+import { createFullscreenTriangle } from "./mesh/primitives/FullscreenTriangle";
 
 interface Viewport {
     x: number;
@@ -11,12 +12,12 @@ interface Viewport {
     height: number;
 }
 
-export class GraphicsDevice {
+export class GraphicsDevice implements Disposable {
     readonly gl: WebGL2RenderingContext;
+    private fullscreenTriangle: Mesh;
 
     constructor(
         canvas: Canvas,
-        private readonly eventBus: EventBus,
     ) {
         const gl = canvas.element.getContext('webgl2');
 
@@ -27,12 +28,7 @@ export class GraphicsDevice {
 
         this.gl = gl;
 
-        eventBus.on(
-            EngineEvent.WindowResize,
-            ({ width, height }) => {
-                this.resize(width, height);
-            }
-        )
+        this.fullscreenTriangle = createFullscreenTriangle(gl);
     }
 
     public clear(color: ClearColor): void {
@@ -50,12 +46,7 @@ export class GraphicsDevice {
     }
 
     public drawFullScreen(): void {
-        this.gl
-            .drawArrays(
-                this.gl.TRIANGLES,
-                0,
-                3,
-            );
+        this.fullscreenTriangle.draw();
     }
 
     public resize(
@@ -87,5 +78,9 @@ export class GraphicsDevice {
             width: viewport[2],
             height: viewport[3],
         };
+    }
+
+    public dispose(): void {
+        this.fullscreenTriangle.dispose();
     }
 }

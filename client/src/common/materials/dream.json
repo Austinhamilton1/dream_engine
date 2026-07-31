@@ -1,8 +1,8 @@
 {
     "uniforms": [
         {
-            "name": "uInput",
-            "type": "int",
+            "name": "uTime",
+            "type": "float",
             "value": 0
         }
     ]

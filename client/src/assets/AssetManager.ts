@@ -4,7 +4,7 @@ import { Asset } from './Asset';
 import { AssetHandle } from "./AssetHandle";
 import type { AssetLoader } from "./AssetLoader";
 
-export class AssetManager {
+export class AssetManager implements Disposable {
     private readonly assets = new Map<string, Asset<Disposable>>();
     private readonly loading = new Map<string, Promise<Asset<Disposable>>>();
 
@@ -106,7 +106,7 @@ export class AssetManager {
         this.assets.delete(name);
     }
 
-    public destroy(): void {
+    public dispose(): void {
         for(const [name, asset] of this.assets) {
             if(asset.refCount > 0) {
                 Logger.warn(

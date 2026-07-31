@@ -26,6 +26,14 @@ export class PingPongFramebuffer implements Disposable {
         [this.front, this.back] = [this.back, this.front];
     }
 
+    public resize(
+        width: number,
+        height: number,
+    ): void {
+        this.front.resize(width, height);
+        this.back.resize(width, height);
+    }
+
     public dispose(): void {
         this.front.dispose();
         this.back.dispose();

@@ -36,6 +36,26 @@ export class Material implements Disposable {
         );
     }
 
+    public getUniform<T>(
+        name: string,
+    ): Uniform<T> | undefined {
+        return this.uniforms.get(name) as Uniform<T>;
+    }
+
+    public setUniform<T>(
+        name: string,
+        value: T,
+    ): void {
+        const uniform = this.uniforms.get(name);
+
+        if(!uniform) {
+            Logger.error('Uniform "%s" does not exist', name);
+            throw new Error('Invalid uniform');
+        }
+
+        uniform.set(value);
+    }
+
     public setTexture(binding: TextureBinding): void {
         this.textures.get(binding.name)?.dispose();
 

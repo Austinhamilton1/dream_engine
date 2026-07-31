@@ -2,8 +2,9 @@
 
 precision highp float;
 
+in vec2 vTexCoord;
+
 uniform float uTime;
-uniform vec2 uResolution;
 
 out vec4 color;
 
@@ -12,9 +13,7 @@ out vec4 color;
 #include <palette.glsl>
 
 void main() {
-    vec2 uv =
-        (gl_FragCoord.xy - 0.5 * uResolution)
-        / uResolution.y;
+    vec2 uv = vTexCoord;
 
     vec2 p = uv;
 

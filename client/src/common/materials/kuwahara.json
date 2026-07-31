@@ -1,0 +1,19 @@
+{
+    "uniforms": [
+        {
+            "name": "uRadius",
+            "type": "int",
+            "value": 3
+        },
+        {
+            "name": "uResolution",
+            "type": "vec2",
+            "value": [0, 0]
+        },
+        {
+            "name": "uInput",
+            "type": "int",
+            "value": 0
+        }
+    ]
+}

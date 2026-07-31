@@ -3,7 +3,7 @@ import type { Disposable } from "../../Disposable";
 import { Texture } from "../texture/Texture";
 
 export class Framebuffer implements Disposable {
-    private readonly texture: Texture;
+    private texture: Texture;
     private readonly framebuffer: WebGLFramebuffer;
     private readonly depth: WebGLRenderbuffer;
 
@@ -81,18 +81,54 @@ export class Framebuffer implements Disposable {
         );
     }
 
+    public resize(
+        width: number,
+        height: number,
+    ): void {
+        this.texture.dispose();
+
+        this.texture = new Texture(
+            this.gl,
+            width,
+            height,
+        );
+
+        this.gl.bindFramebuffer(
+            this.gl.FRAMEBUFFER,
+            this.framebuffer,
+        );
+
+        this.gl.framebufferTexture2D(
+            this.gl.FRAMEBUFFER,
+            this.gl.COLOR_ATTACHMENT0,
+            this.gl.TEXTURE_2D,
+            this.texture.getTexture(),
+            0,
+        );
+
+        this.gl.bindRenderbuffer(
+            this.gl.RENDERBUFFER,
+            this.depth,
+        );
+
+        this.gl.renderbufferStorage(
+            this.gl.RENDERBUFFER,
+            this.gl.DEPTH_COMPONENT24,
+            width,
+            height,
+        );
+
+        this.gl.bindFramebuffer(
+            this.gl.FRAMEBUFFER,
+            null,
+        );
+    }
+
     public bind() {
         this.gl.bindFramebuffer(
             this.gl.FRAMEBUFFER,
             this.framebuffer,
         );
-    }
-
-    public unbind() {
-        this.gl.bindFramebuffer(
-            this.gl.FRAMEBUFFER,
-            null,
-        )
     }
 
     public getFramebuffer(): WebGLFramebuffer {

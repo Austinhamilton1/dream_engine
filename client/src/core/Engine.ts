@@ -34,10 +34,7 @@ export class Engine {
             this.eventBus,
         );
 
-        this.graphics = new GraphicsDevice(
-            this.canvas, 
-            this.eventBus,
-        );
+        this.graphics = new GraphicsDevice(this.canvas);
 
         this.renderer = new Renderer();
 
@@ -46,6 +43,13 @@ export class Engine {
         Timer.initialize();
 
         this.fpsCounter = new DebugOverlay(this.eventBus);
+
+        this.eventBus.on(
+            EngineEvent.WindowResize,
+            ({ width, height }) => {
+                this.renderer.resize(width, height);
+            }
+        )
 
         this.eventBus.on(
             EngineEvent.EngineStart,
@@ -70,7 +74,7 @@ export class Engine {
                 Logger.info('Stepping engine from "%s"', source);
                 await this.step();
             }
-        )
+        );
     }
 
     public async initialize(): Promise<void> {
@@ -106,7 +110,8 @@ export class Engine {
     public stop(): void {
         this.running = false;
         this.application.shutdown();
-        this.manager.destroy();
+        this.graphics.dispose();
+        this.manager.dispose();
         Logger.info('Dream Engine Stopped');
     }
 
