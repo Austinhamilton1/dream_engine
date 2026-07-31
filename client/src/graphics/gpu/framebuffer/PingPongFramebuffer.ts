@@ -14,11 +14,11 @@ export class PingPongFramebuffer implements Disposable {
         this.back = new Framebuffer(gl, width, height);
     }
 
-    public getRead(): Framebuffer {
+    public read(): Framebuffer {
         return this.front;
     }
 
-    public getWrite(): Framebuffer {
+    public write(): Framebuffer {
         return this.back;
     }
 

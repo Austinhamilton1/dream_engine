@@ -11,12 +11,4 @@ export abstract class RenderPass {
     public abstract render(ctx: RenderContext): void;
 
     public dispose(): void {};
-
-    public addDependency<T>(name: string, priority = 0): void {
-
-    }
-
-    public outputs<T>(name: string): void {
-
-    }
 }
