@@ -1,7 +1,7 @@
 import { Logger } from "../../../core/Logger";
-import type { GPUResource } from "../GPUResource";
+import type { Disposable } from "../../Disposable";
 
-export class Texture implements GPUResource {
+export class Texture implements Disposable {
     private readonly texture: WebGLTexture;
 
     constructor(
@@ -81,7 +81,7 @@ export class Texture implements GPUResource {
         return this.texture;   
     }
 
-    public destroy(): void {
+    public dispose(): void {
         this.gl.deleteTexture(this.texture)
     }
 }

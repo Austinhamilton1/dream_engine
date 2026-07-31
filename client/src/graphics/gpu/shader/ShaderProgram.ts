@@ -1,9 +1,9 @@
 import { Logger } from "../../../core/Logger";
-import type { GPUResource } from "../GPUResource";
+import type { Disposable } from "../../Disposable";
 import type { GraphicsDevice } from "../GraphicsDevice";
 import type { Shader } from "./Shader";
 
-export class ShaderProgram implements GPUResource {
+export class ShaderProgram implements Disposable {
     private readonly graphics: GraphicsDevice;
     private readonly program: WebGLProgram;
     private uniforms = new Map<string, WebGLUniformLocation>();
@@ -81,7 +81,7 @@ export class ShaderProgram implements GPUResource {
             );
     }
 
-    public destroy(): void {
+    public dispose(): void {
         this.graphics
             .getContext()
             .deleteProgram(

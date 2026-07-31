@@ -1,10 +1,10 @@
 import { Logger } from "../../../core/Logger";
+import type { Disposable } from "../../Disposable";
 import type { IndexBuffer } from "../buffer/IndexBuffer";
 import type { VertexBuffer } from "../buffer/VertexBuffer";
-import type { GPUResource } from "../GPUResource";
 import type { VertexLayout } from "./VertexLayout";
 
-export class VertexArray implements GPUResource {
+export class VertexArray implements Disposable {
     private readonly gl: WebGL2RenderingContext;
     private vao: WebGLVertexArrayObject | null;
 
@@ -69,7 +69,7 @@ export class VertexArray implements GPUResource {
         return this.vao;
     }
 
-    public destroy(): void {
+    public dispose(): void {
         if(this.vao) {
             this.gl.deleteVertexArray(this.vao);
 

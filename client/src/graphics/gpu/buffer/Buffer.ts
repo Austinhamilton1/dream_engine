@@ -1,7 +1,7 @@
 import { Logger } from "../../../core/Logger";
-import type { GPUResource } from "../GPUResource";
+import type { Disposable } from "../../Disposable";
 
-export abstract class Buffer implements GPUResource {
+export abstract class Buffer implements Disposable {
     protected readonly gl: WebGL2RenderingContext;
     protected readonly target: GLenum;
 
@@ -40,7 +40,7 @@ export abstract class Buffer implements GPUResource {
         return this.buffer;
     }
 
-    public destroy(): void {
+    public dispose(): void {
         if(this.buffer) {
             this.gl.deleteBuffer(this.buffer);
             this.buffer = null;

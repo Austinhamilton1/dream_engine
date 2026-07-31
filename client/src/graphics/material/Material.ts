@@ -1,25 +1,28 @@
+import type { AssetHandle } from "../../assets/AssetHandle";
 import { Logger } from "../../core/Logger";
+import type { Disposable } from "../Disposable";
 import type { ShaderProgram } from "../gpu/shader/ShaderProgram";
-import type { Texture } from "../gpu/texture/Texture";
 import type { Uniform } from "../gpu/uniform/Uniform";
 import { RenderState } from "./RenderState";
-import { TextureBinding } from "./TextureBinding";
+import type { TextureBinding } from "./TextureBinding";
 
-export class Material {
-    private shader: ShaderProgram | null = null;
+export class Material implements Disposable {
+    private shader?: AssetHandle<ShaderProgram>;
     private readonly uniforms = new Map<string, Uniform<any>>();
     private readonly textures = new Map<string, TextureBinding>();
     public state = new RenderState();
 
     constructor() {}
 
-    public setShader(shader: ShaderProgram): void {
-        this.shader = shader;
+    public setShader(shader: AssetHandle<ShaderProgram>): void {
+        this.shader?.dispose();
+
+        this.shader = shader.clone();
     }
 
-    public getShader(): ShaderProgram {
+    public getShader(): AssetHandle<ShaderProgram> {
         if(!this.shader) {
-            Logger.error('Shader was never assigned to material');
+            Logger.error('Shader not assigned to material');
             throw new Error('Invalid shader');
         }
 
@@ -33,30 +36,26 @@ export class Material {
         );
     }
 
-    public setTexture(
-        name: string,
-        texture: Texture,
-    ): void {
+    public setTexture(binding: TextureBinding): void {
+        this.textures.get(binding.name)?.dispose();
+
         this.textures.set(
-            name,
-            new TextureBinding(
-                name,
-                texture,
-            ),
+            binding.name,
+            binding,
         );
     }
 
     public apply(): void {
         if(this.shader) {
-            this.shader.use();
+            this.shader.value.use();
 
             // Upload textures
             let unit = 0;
-            for(const texture of this.textures.values()) {
-                texture.texture.bind(unit);
+            for(const binding of this.textures.values()) {
+                binding.texture.bind(unit);
 
-                this.shader.setInt(
-                    texture.name,
+                this.shader.value.setInt(
+                    binding.name,
                     unit,
                 );
 
@@ -65,8 +64,20 @@ export class Material {
 
             // Upload uniforms
             for(const uniform of this.uniforms.values()) {
-                uniform.upload(this.shader);
+                uniform.upload(this.shader.value);
             }
         }
+    }
+
+    public dispose(): void {
+        this.shader?.dispose();
+        for(const textureBinding of this.textures.values()) {
+            textureBinding.dispose();
+        }
+
+
+        this.shader = undefined;
+        this.textures.clear();
+        this.uniforms.clear();
     }
 }

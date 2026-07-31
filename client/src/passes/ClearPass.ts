@@ -1,5 +1,5 @@
-import type { RenderContext } from "../RenderContext";
-import { RenderPass } from "./RenderPass";
+import type { RenderContext } from "../graphics/renderer/RenderContext";
+import { RenderPass } from "../graphics/renderer/RenderPass";
 
 export class ClearPass extends RenderPass {
     public render(ctx: RenderContext): void {

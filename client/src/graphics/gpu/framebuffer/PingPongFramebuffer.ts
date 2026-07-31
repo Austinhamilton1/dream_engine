@@ -1,7 +1,7 @@
-import type { GPUResource } from "../GPUResource";
+import type { Disposable } from "../../Disposable";
 import { Framebuffer } from "./FrameBuffer";
 
-export class PingPongFramebuffer implements GPUResource {
+export class PingPongFramebuffer implements Disposable {
     private front: Framebuffer;
     private back: Framebuffer;
 
@@ -26,8 +26,8 @@ export class PingPongFramebuffer implements GPUResource {
         [this.front, this.back] = [this.back, this.front];
     }
 
-    public destroy(): void {
-        this.front.destroy();
-        this.back.destroy();
+    public dispose(): void {
+        this.front.dispose();
+        this.back.dispose();
     }
 }

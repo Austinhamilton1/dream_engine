@@ -1,8 +1,8 @@
 import { Logger } from "../../../core/Logger";
-import type { GPUResource } from "../GPUResource";
+import type { Disposable } from "../../Disposable";
 import { Texture } from "../texture/Texture";
 
-export class Framebuffer implements GPUResource {
+export class Framebuffer implements Disposable {
     private readonly texture: Texture;
     private readonly framebuffer: WebGLFramebuffer;
     private readonly depth: WebGLRenderbuffer;
@@ -103,8 +103,8 @@ export class Framebuffer implements GPUResource {
         return this.texture;
     }
 
-    public destroy(): void {
-        this.texture.destroy();
+    public dispose(): void {
+        this.texture.dispose();
 
         this.gl.deleteRenderbuffer(this.depth);
 

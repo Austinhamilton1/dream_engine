@@ -1,10 +1,10 @@
+import type { Disposable } from "../../Disposable";
 import { IndexBuffer } from "../buffer/IndexBuffer";
 import { VertexBuffer } from "../buffer/VertexBuffer";
-import type { GPUResource } from "../GPUResource";
 import { VertexArray } from "../layout/VertexArray";
 import { PrimitiveType, type MeshData } from "./MeshData";
 
-export class Mesh implements GPUResource {
+export class Mesh implements Disposable {
     private readonly gl: WebGL2RenderingContext;
     private readonly vao: VertexArray;
     private readonly vertexBuffer: VertexBuffer;
@@ -75,7 +75,7 @@ export class Mesh implements GPUResource {
         }
     }
 
-    public destroy(): void {
+    public dispose(): void {
         this.vao.destroy();
         this.vertexBuffer.destroy();
 

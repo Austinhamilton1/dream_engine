@@ -1,8 +1,8 @@
 import { Application } from "./core/Application";
 import type { Engine } from "./core/Engine";
-import { ClearPass } from "./graphics/renderer/passes/ClearPass";
-import { DreamPass } from "./graphics/renderer/passes/DreamPass";
-import { MandelbrotPass } from './graphics/renderer/passes/Mandelbrot';
+import { ClearPass } from "./passes/ClearPass";
+import { DreamPass } from "./passes/DreamPass";
+import { MandelbrotPass } from './passes/MandelbrotPass';
 
 export class DreamApplication extends Application {
     public override async initialize(engine: Engine): Promise<void> {

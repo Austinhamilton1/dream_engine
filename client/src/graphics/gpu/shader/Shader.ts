@@ -1,9 +1,9 @@
 import { Logger } from "../../../core/Logger";
-import type { GPUResource } from "../GPUResource";
+import type { Disposable } from "../../Disposable";
 import type { GraphicsDevice } from "../GraphicsDevice";
 import { ShaderType } from "./ShaderType";
 
-export class Shader implements GPUResource {
+export class Shader implements Disposable {
     private shader: WebGLShader;
 
     constructor(
@@ -80,7 +80,7 @@ export class Shader implements GPUResource {
         return this.shader;
     }
 
-    public destroy(): void {
+    public dispose(): void {
         this.graphics
             .getContext()
             .deleteShader(

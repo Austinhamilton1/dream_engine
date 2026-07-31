@@ -1,8 +1,7 @@
+import type { Disposable } from "../Disposable";
 import type { Texture } from "../gpu/texture/Texture";
 
-export class TextureBinding {
-    constructor(
-        public readonly name: string,
-        public readonly texture: Texture,
-    ) {}
+export interface TextureBinding extends Disposable {
+    readonly name: string;
+    get texture(): Texture;
 }
